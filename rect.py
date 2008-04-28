@@ -83,3 +83,4 @@ class RectMaskCombo(Mask):
         return Mask.collidepoint((self.rect.right-point[0],
                                   self.rect.bottom-point[1]),
                                  (0,0))
+    
