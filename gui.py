@@ -5,6 +5,7 @@ import image #from pyglibs!
 import mask #from pyglibs!
 import rect #again...
 import theme as pygTheme#...
+from misc import careful_div
 
 class Cursor(object):
     def __init__(self):
@@ -51,7 +52,6 @@ class App(object):
             self.theme = pygTheme.get_default_theme()
 
     def get_events(self):
-##        self.set_mouse_hover(False) #make sure this resets ;)
         reset = True
         for i in self.widgets:
             if i.update():
@@ -144,6 +144,9 @@ class Widget(object):
         self.visible = True
         self.active = True
 
+    def set_font(self, fontname, size):
+        self.font = pygame.font.Font(fontname, size)
+
     def get_cursor(self):
         return self.parent.get_cursor()
 
@@ -226,10 +229,11 @@ class Label(Widget):
 
         self.text = text
 
-        self.font = pygame.font.Font(self.use_theme["font"]["name"],
-                                     self.use_theme["font"]["size"])
-        self.font_color = self.use_theme["font"]["color"]
-        self.font_aa = self.use_theme["font"]["aa"]
+        self.font = self.use_theme["font"]
+        self.font_color = self.use_theme["font_color"]
+        self.font_aa = self.use_theme["font_aa"]
+
+        self.bg_image = self.use_theme["image"]
 
         self.make_image()
         self.set_render()
@@ -238,6 +242,12 @@ class Label(Widget):
         self.surface = self.font.render(self.text,
                                         self.font_aa,
                                         self.font_color)
+        if self.bg_image and not self.bg_image == "noimage":
+            new = image.resize_tile(self.bg_image, self.surface.get_size())
+            a = self.surface
+            new.blit(a, (int(careful_div(new.get_width() - a.get_width(), 2)),
+                         int(careful_div(new.get_height() - a.get_height(), 2))))
+            self.surface = new
         self.make_rect()
         self.move()
 
@@ -248,12 +258,15 @@ class Button(Widget):
 
         self.text = text
 
-        self.font = pygame.font.Font(self.use_theme["font"]["name"],
-                                     self.use_theme["font"]["size"])
-        self.font_color_regular = self.use_theme["font"]["color_regular"]
-        self.font_color_hover = self.use_theme["font"]["color_hover"]
-        self.font_color_click = self.use_theme["font"]["color_click"]
-        self.font_aa = self.use_theme["font"]["aa"]
+        self.font = self.use_theme["font"]
+        self.font_color_regular = self.use_theme["font_color_regular"]
+        self.font_color_hover = self.use_theme["font_color_hover"]
+        self.font_color_click = self.use_theme["font_color_click"]
+        self.font_aa = self.use_theme["font_aa"]
+
+        self.bg_regular = self.use_theme["image_regular"]
+        self.bg_hover = self.use_theme["image_hover"]
+        self.bg_click = self.use_theme["image_click"]
 
         self.make_image()
         self.set_render()
@@ -265,12 +278,30 @@ class Button(Widget):
         self.surf_regular = self.font.render(self.text,
                                              self.font_aa,
                                              self.font_color_regular)
+        if self.bg_regular and not self.bg_regular == "noimage":
+            new = image.resize_tile(self.bg_regular, self.surf_regular.get_size())
+            a = self.surf_regular
+            new.blit(a, (int(careful_div(new.get_width() - a.get_width(), 2)),
+                         int(careful_div(new.get_height() - a.get_height(), 2))))
+            self.surf_regular = new
         self.surf_hover = self.font.render(self.text,
                                            self.font_aa,
-                                           self.font_color_regular)
+                                           self.font_color_hover)
+        if self.bg_hover and not self.bg_hover == "noimage":
+            new = image.resize_tile(self.bg_hover, self.surf_hover.get_size())
+            a = self.surf_hover
+            new.blit(a, (int(careful_div(new.get_width() - a.get_width(), 2)),
+                         int(careful_div(new.get_height() - a.get_height(), 2))))
+            self.surf_hover = new
         self.surf_click = self.font.render(self.text,
                                            self.font_aa,
-                                           self.font_color_regular)
+                                           self.font_color_click)
+        if self.bg_click  and not self.bg_click  == "noimage":
+            new = image.resize_tile(self.bg_click , self.surf_click .get_size())
+            a = self.surf_click
+            new.blit(a, (int(careful_div(new.get_width() - a.get_width(), 2)),
+                         int(careful_div(new.get_height() - a.get_height(), 2))))
+            self.surf_click  = new
 
         self.surface = self.surf_regular
         self.make_rect()
