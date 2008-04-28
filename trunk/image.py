@@ -2,7 +2,7 @@
 import pygame
 from pygame.locals import *
 
-import util
+from misc import careful_div
 
 
 def change_color(surface, a, b):
@@ -36,7 +36,7 @@ def colorize(surface, base_color, to_color, threshold=0):
             if a[0]>=base_color[0]-threshold and a[0]<=base_color[0]+threshold and\
                a[1]>=base_color[1]-threshold and a[1]<=base_color[1]+threshold and\
                a[2]>=base_color[2]-threshold and a[2]<=base_color[2]+threshold:
-                amount=util.careful_div(float(a[0]), 255)
+                amount=careful_div(float(a[0]), 255)
                 r=to_color[0]*amount
                 g=to_color[1]*amount
                 b=to_color[2]*amount
@@ -57,11 +57,7 @@ def load_surface(name, colorkey=None, alpha=None):
        alpha can be None/False/0 to disable(faster rendering),
         True to enable and use per-pixel alpha,
         or an int for a full-surface alpha."""
-    image=pygame.image.load(name)
-    if alpha:
-        image=image.convert_alpha()
-    else:
-        image=image.convert()
+    image=pygame.image.load(name).convert_alpha()
     if isinstance(alpha, int):
         image.set_alpha(alpha)
 
@@ -358,6 +354,23 @@ def resize_multiply(surface, size, min_dimensions=True):
             surf.blit(image, [x*image.get_width(),
                               y*image.get_height()])
     return surf
+
+def combine_images(self, images, sep=0):
+    flags = images[-1].get_flags()
+    width = 0
+    height = 0
+    for i in images:
+        width += i.get_width() + sep
+        if i.get_height() > height:
+            height = i.get_height()
+
+    new = pygame.Surface((width, height), flags).convert_alpha()
+    new.fill((0,0,0,0))
+    lx = 0
+    for i in images:
+        new.blit(i, (lx, 0))
+        lx += i.get_width() + sep
+    return new
 
 
 
