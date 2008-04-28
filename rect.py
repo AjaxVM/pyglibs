@@ -2,7 +2,7 @@ import pygame
 from pygame import Rect
 
 from misc import rotate_point2 as rotate_point#from pyglibs!
-from mask import Mask#from pyglibs!
+from mask import Mask, use_pygame#from pyglibs!
 
 class RRect(Rect):
     """A rotatable version of the Pygame Rect object."""
@@ -70,17 +70,14 @@ class RectMaskCombo(Mask):
         Mask.from_array(self, array)
 
     def colliderectmask(self, other):
-        return self.overlap(other,
-                            (other.rect.left-self.rect.right,
-                             other.rect.top-self.rect.bottom))
+        self.pos = self.rect.topleft
+        return self.overlap(other)
 
     def colliderect(self, other):
-        return Mask.colliderect(other,
-                                (other.left-self.rect.right,
-                                 other.top-self.rect.bottom))
+        self.pos = self.rect.topleft
+        return Mask.colliderect(self, other)
 
     def collidepoint(self, point):
-        return Mask.collidepoint((self.rect.right-point[0],
-                                  self.rect.bottom-point[1]),
-                                 (0,0))
+        self.pos = self.rect.topleft
+        return Mask.collidepoint(self, point)
     

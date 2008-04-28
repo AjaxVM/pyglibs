@@ -21,3 +21,6 @@ def careful_mod(x, y):
     if x and y:
         return x%y
     return 0
+
+def sub_vector2(x, y):
+    return x[0] - y[0], x[1] - y[1]
