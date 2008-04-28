@@ -1,6 +1,8 @@
 import pygame
 import gui
 reload(gui)
+import image
+reload(image)
 
 def main():
     pygame.init()
@@ -8,6 +10,7 @@ def main():
     screen.fill((255,0,0))
 
     root = gui.App(screen.subsurface(0,0,640,480))
+    root.bg_color = (255, 0, 0)
     label = gui.Label(root, "L1", "Label Test!!!",
                       widget_pos="center")
     l2 = gui.Label(root, "L1", "222!!!",
@@ -16,7 +19,7 @@ def main():
     l2.make_image()
 
     button1 = gui.Button(root, "B1", "Button!",
-                         pos=(-1, l2.rect.bottom),
+                         pos=(-1, l2.rect.centery),
                          widget_pos="midtop")
 
     while 1:

@@ -140,8 +140,13 @@ def clip_empty(surface, st_color=None):
     for x in xrange(surf_width):
         empty=True
         for y in xrange(surf_height):
-            if not surface.get_at((x, y))[0:3]==st_color[0:3]:
-                empty=False
+            a = surface.get_at((x, y))
+            if len(a) == 4 and len(st_color) == 4:
+                if not a == st_color:
+                    empty = False
+            else:
+                if not a[0:3]==st_color[0:3]:
+                    empty=False
         if empty:
             minx+=1
         else:
@@ -149,8 +154,13 @@ def clip_empty(surface, st_color=None):
     for x in xrange(surf_width):
         empty=True
         for y in xrange(surf_height):
-            if not surface.get_at((surf_width-x-1, y))[0:3]==st_color[0:3]:
-                empty=False
+            a = surface.get_at((surf_width-x-1, y, y))
+            if len(a) == 4 and len(st_color) == 4:
+                if not a == st_color:
+                    empty = False
+            else:
+                if not a[0:3]==st_color[0:3]:
+                    empty=False
         if empty:
             maxx-=1
         else:
@@ -159,8 +169,13 @@ def clip_empty(surface, st_color=None):
     for y in xrange(surf_height):
         empty=True
         for x in xrange(surf_width):
-            if not surface.get_at((x, y))[0:3]==st_color[0:3]:
-                empty=False
+            a = surface.get_at((x, y))
+            if len(a) == 4 and len(st_color) == 4:
+                if not a == st_color:
+                    empty = False
+            else:
+                if not a[0:3]==st_color[0:3]:
+                    empty=False
         if empty:
             miny+=1
         else:
@@ -168,8 +183,13 @@ def clip_empty(surface, st_color=None):
     for y in xrange(surf_height):
         empty=True
         for x in xrange(surf_width):
-            if not surface.get_at((x, surf_height-y-1))[0:3]==st_color[0:3]:
-                empty=False
+            a = surface.get_at((x, surf_height-y-1))
+            if len(a) == 4 and len(st_color) == 4:
+                if not a == st_color:
+                    empty = False
+            else:
+                if not a[0:3]==st_color[0:3]:
+                    empty=False
         if empty:
             maxy-=1
         else:
@@ -243,7 +263,7 @@ def resize_tile(surface, size, min_dimensions=True):
     num_y=(height/nh)-1
 
     surf=pygame.transform.scale(surf, (width, height))
-    r=nsurf.get_rect()
+    r=surf.get_rect()
     surf.fill((0,0,0,0))
 
     surf.blit(topleft, [0,0])
@@ -306,7 +326,7 @@ def resize_enlarge(surface, size, min_dimensions=True):
     num_y=(height/nh)-1
 
     surf=pygame.transform.scale(surf, (width, height))
-    r=nsurf.get_rect()
+    r=surf.get_rect()
     surf.fill((0,0,0,0))
 
     surf.blit(topleft, [0,0])

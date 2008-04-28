@@ -1,0 +1,17 @@
+{Label:
+image = |label.png|
+font = $Vera.ttf 25
+font_color = 255 255 255
+font_aa = True
+}
+
+{Button:
+image_regular = |label.png|
+image_hover = None
+image_click = None
+font = $Vera.ttf 25
+font_color_regular = 255 255 255
+font_color_hover = 255 0 255
+font_color_click = 255 255 0
+font_aa = True
+}
