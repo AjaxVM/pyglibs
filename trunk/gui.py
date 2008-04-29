@@ -6,6 +6,7 @@ import mask #from pyglibs!
 import rect #again...
 import theme as pygTheme#...
 from misc import careful_div
+import constants
 
 class Cursor(object):
     def __init__(self):
@@ -16,7 +17,7 @@ class Cursor(object):
         pygame.mouse.set_cursor(*getattr(self, name))
 
     def load_cursor_from_image(self, filename):
-        i = pygame.image.load(filename)
+        i = pygame.image.load(constants.get_path(filename))
         i = pygame.transform.flip(i, True, False)
         i = pygame.transform.rotate(i, 90)
         size = i.get_size()
@@ -320,21 +321,26 @@ class Button(Widget):
     def event(self, event):
         if not self.clicked:
             self.swap_surface(self.surf_regular)
+        else:
+            self.swap_surface(self.surf_click)
         if self.collidepoint(self.get_mouse_pos()):
             self.hover = True
             self.set_mouse_hover()
-            self.swap_surface(self.surf_hover)
+            if not self.clicked:
+                self.swap_surface(self.surf_hover)
             if event.type == MOUSEBUTTONDOWN:
                 self.clicked = True
                 self.swap_surface(self.surf_click)
             if event.type == MOUSEBUTTONUP:
                 ret = Event(Button, self.name)
                 self.clicked = False
+                self.swap_surface(self.surf_hover)
                 return ret
         else:
             self.hover = False
             if event.type == MOUSEBUTTONUP:
                 self.clicked = False
+                self.swap_surface(self.surf_regular)
         return event
                 
 GUI_EVENT = "This is a string so we don't confuse Pygame ;)"
