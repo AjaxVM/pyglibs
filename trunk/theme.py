@@ -115,6 +115,8 @@ def load_theme(foldername):
         values = get_values(line)
         if not values:
             continue
+        if matches(values, ["{", "*", "}"]):
+            data[values[1]] = {}
         if matches(values, ["{", "*", ":"]):
             #this is pushing the latest widget to a new one
             if current_widget[0] or current_widget[1]:

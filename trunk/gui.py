@@ -342,6 +342,36 @@ class Button(Widget):
                 self.clicked = False
                 self.swap_surface(self.surf_regular)
         return event
+
+class IconButton(Button):
+    def __init__(self, parent, name,
+                 image_regular, image_hover, image_click,
+                 pos=(-1,-1), widget_pos="topleft"):
+        Button.__init__(self, parent, name, "", pos, widget_pos)
+        for i in [self.text, self.font, self.font_color_regular, self.font_color_hover,
+                  self.font_color_click, self.bg_regular, self.bg_hover, self.bg_click]:
+            del i
+
+        self.description = "IconButton"
+        self.use_theme = self.theme[self.description]
+
+        self.surf_regular = image_regular
+        self.surf_hover = image_hover
+        self.surf_click = image_click
+        self.surface = self.surf_regular
+        self.make_rect()
+        self.move()
+
+        self.set_render()
+
+    def make_image(self):
+        pass
+
+    def event(self, event):
+        ret = Button.event(self, event)
+        if ret.type == GUI_EVENT:
+            ret.widget = IconButton
+        return ret
                 
 GUI_EVENT = "This is a string so we don't confuse Pygame ;)"
 GUI_EVENT_CLICK = 0
