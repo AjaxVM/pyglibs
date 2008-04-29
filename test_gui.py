@@ -1,8 +1,7 @@
 import pygame
 import gui
-reload(gui)
+
 import image
-reload(image)
 
 def main():
     pygame.init()

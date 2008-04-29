@@ -1,5 +1,6 @@
 import pygame
 import safe_python
+import constants
 
 import os
 
@@ -146,5 +147,5 @@ def load_theme(foldername):
     return data
 
 def get_default_theme():
-    return load_theme("default_theme")
+    return load_theme(constants.get_path("default_theme"))
 

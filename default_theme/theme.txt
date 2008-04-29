@@ -6,9 +6,9 @@ font_aa = True
 }
 
 {Button:
-image_regular = |label.png|
-image_hover = None
-image_click = None
+image_regular = |b_regular.png|
+image_hover = |b_hover.png|
+image_click = |b_click.png|
 font = $Vera.ttf 25
 font_color_regular = 255 255 255
 font_color_hover = 255 0 255
