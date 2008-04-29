@@ -1,5 +1,5 @@
 {Label:
-image = |label.png|
+image = None
 font = $Vera.ttf 25
 font_color = 255 255 255
 font_aa = True
@@ -15,3 +15,4 @@ font_color_hover = 255 0 255
 font_color_click = 255 255 0
 font_aa = True
 }
+{IconButton}
