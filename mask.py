@@ -219,3 +219,24 @@ def from_array(array):
     new = Mask((1,1))
     new.from_array(array)
     return new
+
+def quick_check(surf1, rect1, surf2, rect2, blk1=None, blk2=None):
+    r = rect1.clip(rect2)
+    if 0 in r.size:
+        return False
+##    r.left = rect1.right - r.width
+##    r.top = rect1.bottom - r.height
+    x1 = r.left - rect1.left
+    x2 = r.left - rect2.left
+    y1 = r.top - rect1.top
+    y2 = r.top - rect2.top
+    if not blk1:
+        blk1 = surf1.get_at((0,0))
+    if not blk2:
+        blk2 = surf2.get_at((0,0))
+    for x in xrange(r.width):
+        for y in xrange(r.height):
+            if surf1.get_at((x+x1, y+y1)) != blk1 and\
+               surf2.get_at((x+x2, y+y2)) != blk2:
+                return True
+    return False
