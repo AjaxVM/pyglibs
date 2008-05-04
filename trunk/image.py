@@ -20,7 +20,7 @@ def change_color(surface, a, b):
 
 
 def colorize(surface, base_color, to_color, threshold=0):
-    """will colorize an image so that a color that is within threshold of base_color,
+    """will colorize an image so that a color that is within + or - threshold of base_color,
        will be modified to fit to_color
 
        surface must be a pygame.surface, original surface is not modified
@@ -30,20 +30,23 @@ def colorize(surface, base_color, to_color, threshold=0):
            set to 0 makes it only match the exact base_color"""
     width, height = surface.get_size()
     surf=surface.copy()
+    alpha = (len(to_color) == 4)
     for x in xrange(width):
         for y in xrange(height):
             a = tuple(surf.get_at((x, y)))
             if a[0]>=base_color[0]-threshold and a[0]<=base_color[0]+threshold and\
                a[1]>=base_color[1]-threshold and a[1]<=base_color[1]+threshold and\
                a[2]>=base_color[2]-threshold and a[2]<=base_color[2]+threshold:
-                amount=careful_div(float(a[0]), 255)
-                r=to_color[0]*amount
-                g=to_color[1]*amount
-                b=to_color[2]*amount
-                if len(a)==4:
-                    surf.set_at((x, y), (r, g, b, a[3]))
-                else:
-                    surf.set_at((x, y), (r, g, b))
+                #get the amount of number to_color this should be:
+                d = int((a[0] + a[1] + a[2]) / 3 / 255)
+                n = [to_color[0] * d,
+                     to_color[1] * d,
+                     to_color[2] * d]
+                if alpha:
+                    n = n + [to_color[3]]
+                elif len(a) == 4:
+                    n = n + [a[3]]
+                surf.set_at((x, y), n)
     return surf
 
 
@@ -746,7 +749,7 @@ def load_fancy_animated_image(name, colorkey=None, alpha=None,
                300
        animation_rows must be a dict with each value being a list,
            used to name and order different "sub-frames" of animation,
-           animation_rows determines which "row" the animation uses, ie the 0'2:
+           animation_rows determines which "row" the animation uses, ie the 0'n:
                100
                200
                300"""
