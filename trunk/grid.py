@@ -13,6 +13,9 @@ class BaseTileMethod(object):
         """returns the tile coordinates(from 0.0-for least to 1.0-for most) converted to pixels"""
         return x, y
 
+    def convert_unit_pos(self, x, y):
+        return x, y
+
     def get_tile_left(self, x, y, z):
         return x-1, y, z
 
@@ -49,11 +52,14 @@ class Square(BaseTileMethod):
         s1, s2, s3 = self.tx, self.ty, self.tz
         return int(x*s1), int(y*s2-z*s3)
 
-    def convert_tile_pos(self, x, y, z):
+    def convert_tile_pos(self, x, y):
         """used to place/move a unit on a tile, both args must be >=0.0 and <= 1.0,
            where x==0.0 and y==0.0 would be the topleft corner of the tile"""
-        s1, s2, s3 = self.tx, self.ty, self.tz
-        return int(x*s1), int(y*s2-s3*z)
+        s1, s2 = self.tx, self.ty
+        return int(x*s1), int(y*s2)
+
+    def convert_unit_pos(self, x, y):
+        return int(self.tx * x), int(self.ty * y)
 
 class Isometric(BaseTileMethod):
     def __init__(self, tile_size):
@@ -68,12 +74,18 @@ class Isometric(BaseTileMethod):
         cy = (s2*x/2) + (s2*y/2) - (s3 * z)
         return int(cx), int(cy)
 
-    def convert_tile_pos(self, x, y,):
+    def convert_tile_pos(self, x, y):
         """used to place/move a unit on a tile, both args must be >=0.0 and <= 1.0,
            where x==0.0 and y==0.0 would be the topleft corner of the tile"""
         s1, s2 = self.tx, self.ty
-        cx = s1*x;cx -= s2*y;cx -= s1*x
-        cy = s2*y;cy -= (s2/2)*y;cy += (s2/2)*x
+        cx = (s1*x/2) - (s1*y/2)
+        cy = (s2*x/2) + (s2*y/2)
+        return int(cx), int(cy)
+
+    def convert_unit_pos(self, x, y):
+        s1, s2 = self.tx, self.ty
+        cx = (s1*x/2) - (s1*y/2)
+        cy = (s2*x/2) + (s2*y/2)
         return int(cx), int(cy)
 
 class Isometric2(Isometric):
@@ -93,6 +105,11 @@ class Isometric2(Isometric):
         cy=y*s2/2
         if odd:cx+=s2
         return int(cx), int(cy)
+
+    def convert_unit_pos(self, x, y):
+        x, y = self.convert_map_pos(int(x), int(y))
+        nx, ny = Isometric.convert_unit_pos(x - int(x), y - int(y))
+        return int(x + nx), int(y + ny)
 
     def get_tile_left(self, x, y, z):
         odd=spc_mod(y, 2)
@@ -145,8 +162,11 @@ class Grid(object):
     def convert_map_pos(self, x, y, z):
         return self.tile_method.convert_map_pos(x, y, z)
 
-    def convert_tile_pos(self, x, y, z):
-        return self.tile_method.convert_tile_pos(x, y, z)
+    def convert_tile_pos(self, x, y):
+        return self.tile_method.convert_tile_pos(x, y)
+
+    def convert_unit_pos(self, x, y):
+        return self.tile_method.convert_unit_pos(x, y)
 
     def get_tile_left(self, x, y, z):
         return self.tile_method.get_tile_left(x, y, z)
