@@ -1,0 +1,1 @@
+PygLibs is a 2d game development library written in Python on top of Pygame. It has many advanced features.
